@@ -19,7 +19,7 @@ console.log(dateFormatted);
 
 const csvFilePath1 = 'D:/training/PROLOGICS/U'+dateFormatted+'.csv'; // Replace with the path to your first CSV file
 const csvFilePath2 = 'D:/training/PROLOGICS/'+dateFormatted+'.csv'; // Replace with the path to your second CSV file
-const apiUrl1 = '{base_url}/api/trigger-record1'; // Replace with your first API endpoint
+const apiUrl1 = 'http://173.230.135.7/api/barcode-registry/uniformity-files'; // Replace with your first API endpoint
 const apiUrl2 = '{base_url}/api/trigger-record2'; // Replace with your second API endpoint
 
 let previousData1 = null;
