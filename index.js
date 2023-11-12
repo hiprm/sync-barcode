@@ -4,7 +4,7 @@ const chokidar = require('chokidar');
 const fs = require('fs').promises;
 
 const app = express();
-const port = 3000;
+const port = 3001;
 
 // Get the current date in YYYYMMDD format
 const today = new Date();
@@ -13,13 +13,13 @@ const month = String(today.getMonth() + 1).padStart(2, '0'); // Month is zero-ba
 const day = String(today.getDate()).padStart(2, '0');
 //const dateFormatted = `${year}${month}${day}`;
 
-const dateFormatted= '20231025';
+const dateFormatted= '20231106';
 
 console.log(dateFormatted);
 
-const csvFilePath1 = 'D:/training/PROLOGICS/U'+dateFormatted+'.csv'; // Replace with the path to your first CSV file
-const csvFilePath2 = 'D:/training/PROLOGICS/'+dateFormatted+'.csv'; // Replace with the path to your second CSV file
-const apiUrl1 = 'http://173.230.135.7/api/barcode-registry/uniformity-files'; // Replace with your first API endpoint
+const csvFilePath1 = 'H:/Harsha/sync-barcode/prologics/U'+dateFormatted+'.csv'; // Replace with the path to your first CSV file
+const csvFilePath2 = 'H:/Harsha/sync-barcode/prologics/'+dateFormatted+'.csv'; // Replace with the path to your second CSV file
+const apiUrl1 = 'http://localhost:3000/api/barcode-registry/uniformity-files'; // Replace with your first API endpoint
 const apiUrl2 = '{base_url}/api/trigger-record2'; // Replace with your second API endpoint
 
 let previousData1 = null;
@@ -50,7 +50,7 @@ async function checkFileAndUpdate(filePath, apiUrl, previousData) {
         jsonDataObj[columnName] = column;
       });
       
-      console.log('Latest Record (JSON):', jsonDataObj);
+      //console.log('Latest Record (JSON):', jsonDataObj);
       
       // Call the corresponding API with the JSON data of the latest record
       await callApi(apiUrl, jsonDataObj);
@@ -74,13 +74,14 @@ function convertToColumnName(index) {
 
 async function callApi(apiUrl, updatedData) {
   try {
+    console.log(updatedData);
     await axios.post(apiUrl, {
       updatedData,
       // You can include additional request data here based on your API requirements.
     });
     console.log('API call successful.');
   } catch (error) {
-    console.error('API call failed:', error.message);
+    console.error('API call failed:', error);
   }
 }
 
