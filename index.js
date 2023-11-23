@@ -17,10 +17,10 @@ const dateFormatted= '20231025';
 
 console.log(dateFormatted);
 
-const csvFilePath1 = 'H:/Harsha/sync-barcode/prologics/U'+dateFormatted+'.csv'; // Replace with the path to your first CSV file
-const csvFilePath2 = 'H:/Harsha/sync-barcode/prologics/'+dateFormatted+'.csv'; // Replace with the path to your second CSV file
-const apiUrl1 = 'http://localhost:3000/api/barcode-registry/uniformity-files'; // Replace with your first API endpoint
-const apiUrl2 = 'http://localhost:3000/api/barcode-registry/in-balancing-file'; // Replace with your second API endpoint
+const csvFilePath1 = 'D:/training/PROLOGICS/U'+dateFormatted+'.csv'; // Replace with the path to your first CSV file
+const csvFilePath2 = 'D:/training/PROLOGICS/'+dateFormatted+'.csv'; // Replace with the path to your second CSV file
+const apiUrl1 = 'http://173.230.135.7/api/barcode-registry/uniformity-files'; // Replace with your first API endpoint
+const apiUrl2 = 'http://173.230.135.7/api/barcode-registry/in-balancing-file'; // Replace with your second API endpoint
 
 let previousData1 = null;
 let previousData2 = null;
@@ -77,7 +77,7 @@ async function callApi(apiUrl, updatedData) {
     console.log(updatedData);
     await axios.post(apiUrl, {
       updatedData,
-      machine_no:1
+      machine_no:"1"
       // You can include additional request data here based on your API requirements.
     });
     console.log('API call successful.');
