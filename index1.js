@@ -13,19 +13,14 @@ const month = String(today.getMonth() + 1).padStart(2, '0'); // Month is zero-ba
 const day = String(today.getDate()).padStart(2, '0');
 const dateFormatted = `${year}${month}${day}`;
 
-//const dateFormatted= '20231025';
-
 console.log(dateFormatted);
 
-
-
-const csvFilePath1 = 'D:/training/PROLOGICS/U'+dateFormatted+'.csv'; // Replace with the path to your first CSV file
-const csvFilePath2 = 'D:/training/PROLOGICS/'+dateFormatted+'.csv'; // Replace with the path to your second CSV file
-// const apiUrl1 = 'http://localhost:3000/api/barcode-registry/uniformity-files'; // Replace with your first API endpoint
-// const apiUrl2 = 'http://localhost:3000/api/barcode-registry/in-balancing-file'; // Replace with your second API endpoint
- const apiUrl1 = 'http://173.230.135.7/api/barcode-registry/uniformity-files'; // Replace with your first API endpoint
- const apiUrl2 = 'http://173.230.135.7/api/barcode-registry/in-balancing-file'; // Replace with your second API endpoint
-
+const csvFilePath1 = 'D:/training/PROLOGICS/U'+dateFormatted+'.csv';
+const csvFilePath2 = 'D:/training/PROLOGICS/'+dateFormatted+'.csv';
+// const apiUrl1 = 'http://173.230.135.7/api/barcode-registry/uniformity-files';
+// const apiUrl2 = 'http://173.230.135.7/api/barcode-registry/in-balancing-file';
+ const apiUrl1 = 'http://localhost:3000/api/barcode-registry/uniformity-files'; // Replace with your first API endpoint
+ const apiUrl2 = 'http://localhost:3000/api/barcode-registry/in-balancing-file'; // Replace with your second API endpoint
 
 let previousData1 = null;
 let previousData2 = null;
@@ -46,18 +41,23 @@ async function checkFileAndUpdate(filePath, apiUrl, previousData) {
     const latestLine = lines[lines.length - 2]; // Get the latest non-empty line
     
     if (latestLine) {
+      // Split the line based on commas
       const columns = latestLine.split(',');
+
+      // Process the special case of semicolons in the first column (A)
+      const firstColumnValue = columns[0].split(';');
+      columns[0] = firstColumnValue.join(',');
+
       const jsonDataObj = {};
       
       columns.forEach((column, index) => {
         // Convert the index to an alphabet-based column ID
         const columnName = convertToColumnName(index);
-        jsonDataObj[columnName] = column;
+        jsonDataObj[columnName] = column.trim(); // Trim to remove extra whitespace
       });
+
+      console.log('Latest Record (JSON):', jsonDataObj);
       
-      //console.log('Latest Record (JSON):', jsonDataObj);
-      
-      // Call the corresponding API with the JSON data of the latest record
       await callApi(apiUrl, jsonDataObj);
     } else {
       console.log('No new data found in the file.');
@@ -67,7 +67,6 @@ async function checkFileAndUpdate(filePath, apiUrl, previousData) {
   }
 }
 
-// Function to convert an index to an alphabet-based column ID
 function convertToColumnName(index) {
   let columnName = '';
   while (index >= 0) {
@@ -82,8 +81,7 @@ async function callApi(apiUrl, updatedData) {
     console.log(updatedData);
     await axios.post(apiUrl, {
       updatedData,
-      machine_no:"1"
-      // You can include additional request data here based on your API requirements.
+      machine_no: "1"
     });
     console.log('API call successful.');
   } catch (error) {
