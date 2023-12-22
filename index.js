@@ -13,9 +13,9 @@ const today = new Date();
 const year = today.getFullYear();
 const month = String(today.getMonth() + 1).padStart(2, '0'); // Month is zero-based
 const day = String(today.getDate()).padStart(2, '0');
-//const dateFormatted = `${year}${month}${day}`;
+const dateFormatted = `${year}${month}${day}`;
 
-const dateFormatted= '20231107';
+//const dateFormatted= '20231107';
 
 console.log(dateFormatted);
 
