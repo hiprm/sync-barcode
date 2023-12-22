@@ -2,9 +2,11 @@ const express = require('express');
 const axios = require('axios');
 const chokidar = require('chokidar');
 const fs = require('fs').promises;
+const FormData = require('form-data');
+
 
 const app = express();
-const port = 3001;
+const port = 3004;
 
 // Get the current date in YYYYMMDD format
 const today = new Date();
@@ -16,11 +18,11 @@ const dateFormatted = `${year}${month}${day}`;
 console.log(dateFormatted);
 
 const csvFilePath1 = 'D:/training/PROLOGICS/U'+dateFormatted+'.csv';
-const csvFilePath2 = 'D:/training/PROLOGICS/'+dateFormatted+'.csv';
-// const apiUrl1 = 'http://173.230.135.7/api/barcode-registry/uniformity-files';
-// const apiUrl2 = 'http://173.230.135.7/api/barcode-registry/in-balancing-file';
- const apiUrl1 = 'http://localhost:3000/api/barcode-registry/uniformity-files'; // Replace with your first API endpoint
- const apiUrl2 = 'http://localhost:3000/api/barcode-registry/in-balancing-file'; // Replace with your second API endpoint
+const csvFilePath2 = 'E:/dailydata/'+dateFormatted+'.csv';
+ const apiUrl1 = 'http://173.230.135.7/api/barcode-registry/uniformity-files';
+ const apiUrl2 = 'http://173.230.135.7/api/barcode-registry/in-balancing-file';
+// const apiUrl1 = 'http://localhost:3000/api/barcode-registry/uniformity-files'; // Replace with your first API endpoint
+ // const apiUrl2 = 'http://localhost:3000/api/barcode-registry/in-balancing-file'; // Replace with your second API endpoint
 
 let previousData1 = null;
 let previousData2 = null;
@@ -81,13 +83,53 @@ async function callApi(apiUrl, updatedData) {
     console.log(updatedData);
     await axios.post(apiUrl, {
       updatedData,
-      machine_no: "1"
+      machine_no: "4"
     });
     console.log('API call successful.');
   } catch (error) {
     console.error('API call failed:', error);
   }
 }
+
+// Function to upload the file
+async function uploadFile() {
+  try {
+    // Get the file name from the API
+    const fileName = dateFormatted+'.csv';
+    const filePath = csvFilePath2;
+    const apiUrl = 'http://173.230.135.7/api/file-upload/upload-inbalance';
+
+    // Read the file as a Buffer
+    const fileBuffer = await fs.readFile(filePath);
+
+    // Create form data with the file
+    const formData = new FormData();
+    formData.append('csvFile', fileBuffer, {
+      filename: fileName,
+      contentType: 'application/octet-stream', // Set the content type if necessary
+    });
+
+    // Make the HTTP request
+    const response = await axios.post(apiUrl, formData, {
+      headers: {
+        'Content-Type': `multipart/form-data; boundary=${formData.getBoundary()}`,
+      },
+    });
+
+    console.log('File uploaded successfully:', response.data);
+  } catch (error) {
+    console.error('Error uploading file:', error.message);
+  }
+}
+
+// Set the interval to 1 minute (60,000 milliseconds)
+const interval = 60 * 10000;
+
+// Initial upload
+uploadFile();
+
+// Schedule subsequent uploads
+setInterval(uploadFile, interval);
 
 app.get('/', (req, res) => {
   res.send('CSV file monitoring and API triggering is active.');
