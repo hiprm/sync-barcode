@@ -76,8 +76,8 @@ function convertToColumnName(index) {
 
 async function callApi(apiUrl, updatedData) {
   try {
-  //  console.log(updatedData);
-    await axios.post(apiUrl, {
+    console.log('real Time API call Started');
+      await axios.post(apiUrl, {
       updatedData,
       machine_no:"1"
       // You can include additional request data here based on your API requirements.

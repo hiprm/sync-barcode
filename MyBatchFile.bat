@@ -1,7 +1,7 @@
 @echo off
 
-echo Changing directory to H:\Harsha\sync-barcode
-cd H:\Harsha\sync-barcode
+echo Changing directory to C:\barcode sync\sync-barcode
+cd C:\barcode sync\sync-barcode
 
 if errorlevel 1 (
     echo Failed to change directory. Exiting.
